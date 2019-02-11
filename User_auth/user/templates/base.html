@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <title>login</title>
+</head>
+
+<body>
+    <div class="container d-flex justify-content-center" style="margin-top: 200px;">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script>
+        $(function(){
+            $('.captcha').after("<button id='refresh' class='btn btn-light btn-sm ml-1'>刷新</button>")
+            // ajax刷新验证码
+            $("#refresh").click(function(){
+            console.log('click');
+            $.getJSON("/captcha/refresh/", function(result) {
+                $(".captcha").attr('src', result['image_url'])
+                $("#id_captcha_0").val(result['key'])
+                })
+            })
+            // ajax 动态验证验证码
+            $('#id_captcha_1').blur(function() {
+                // 输入框失去焦点会触发函数
+                json_data={
+                    'response': $('#id_captcha_1').val(),
+                    'hashkey': $('#id_captcha_0').val()
+                }
+                $.getJSON('/ajax_val', json_data, function(data) {
+                    $('#captcha_status').remove()
+                    // status返回1为验证码正确，返回0为验证码错误，在输入框后面写入提示信息
+                    if(data['status']) {
+                        $('#id_captcha_1').after("<span id='captcha_status'>验证码正确</span>")
+                    }else {
+                        $('#id_captcha_1').after("<span id='captcha_status'>验证码错误</span>")
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

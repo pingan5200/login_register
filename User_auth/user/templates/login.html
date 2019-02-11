@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="width: 20rem;">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div class="card-title">账号登陆</div>
+            <a href="{% url 'user:register' %}">注册</a>
+        </div>
+        {% if tips %}
+        <small class="text-danger">{{ tips }}</small>
+        {% endif %}
+        <form action="{% url 'user:login' %}" class="form" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field }}
+                {% for error in field.errors %}
+                <small class="text-danger">
+                    {{ error }}
+                </small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">登陆</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card" style="width: 20rem;">
+    <div class="card-body">
+        <div class="card-title">账号注册</div>
+        <form action="{% url 'user:register' %}" class="form" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field }}
+                {% for error in field.errors %}
+                <small class="text-danger">
+                    {{ error }}
+                </small>
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">注册</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
